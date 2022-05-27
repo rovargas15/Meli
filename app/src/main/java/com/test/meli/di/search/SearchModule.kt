@@ -1,10 +1,11 @@
-package com.test.meli.di.query
+package com.test.meli.di.search
 
 import com.test.meli.data.endpoint.SearchProductApi
 import com.test.meli.data.repository.SearchProductRepositoryImpl
 import com.test.meli.domain.repository.DomainExceptionRepository
 import com.test.meli.domain.repository.SearchProductRepository
 import com.test.meli.domain.uc.SearchProductUC
+import com.test.meli.ui.search.SearchViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,6 +18,11 @@ import retrofit2.Retrofit
 object SearchModule {
 
     @Provides
+    fun searchViewModelProvider(
+        searchProductUC: SearchProductUC
+    ) = SearchViewModel(searchProductUC)
+
+    @Provides
     @ViewModelScoped
     fun searchProductUCProvider(
         searchProductRepository: SearchProductRepository
@@ -27,7 +33,8 @@ object SearchModule {
     fun searchProductRepositoryImplProvider(
         searchProductApi: SearchProductApi,
         domainExceptionRepository: DomainExceptionRepository
-    ) = SearchProductRepositoryImpl(searchProductApi, domainExceptionRepository)
+    ): SearchProductRepository =
+        SearchProductRepositoryImpl(searchProductApi, domainExceptionRepository)
 
     @Provides
     @ViewModelScoped
