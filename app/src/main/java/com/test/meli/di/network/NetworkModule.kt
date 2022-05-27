@@ -1,4 +1,4 @@
-package com.test.meli.di.data
+package com.test.meli.di.network
 
 import android.app.Application
 import com.test.meli.BuildConfig

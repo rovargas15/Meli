@@ -1,4 +1,4 @@
-package com.test.meli
+package com.test.meli.ui.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.test.meli.R
 import com.test.meli.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
