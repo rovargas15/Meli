@@ -7,11 +7,9 @@ data class SellerReputationDTO(
     @Json(name = "level_id")
     val levelId: String,
     @Json(name = "power_seller_status")
-    val powerSellerStatus: String?,
-    @Json(name = "transactions")
-    val transactions: TransactionDTO
+    val powerSellerStatus: String?
 ) {
     fun toDomainSellerReputation(): SellerReputation {
-        return SellerReputation(levelId, powerSellerStatus, transactions.toDomainTransaction())
+        return SellerReputation(levelId, powerSellerStatus)
     }
 }

@@ -12,23 +12,16 @@ class CommonErrors {
 
     private fun manageJavaErrors(throwable: Throwable): DomainException {
         return when (throwable) {
-            is SocketTimeoutException -> DomainException.TimeOutException
-            is ConnectException -> DomainException.InternalErrorException
+            is SocketTimeoutException -> TimeOutException
+            is ConnectException -> InternalErrorException
             else -> manageParsingExceptions(throwable)
         }
     }
 
     private fun manageParsingExceptions(throwable: Throwable): DomainException {
         return when (throwable) {
-            is JsonDataException -> DomainException.ParseException
-            else -> manageOtherException(throwable)
-        }
-    }
-
-    private fun manageOtherException(throwable: Throwable): DomainException {
-        return when (throwable) {
-            is DomainException.NoConnectivityException -> DomainException.NoConnectivityDomainException
-            else -> DomainException.UnknownError
+            is JsonDataException -> ParseException
+            else -> UnknownError
         }
     }
 }
