@@ -1,11 +1,5 @@
-/*
 package com.test.meli.domain.uc
 
-import com.test.meli.app.Result
-import com.test.meli.app.getFailure
-import com.test.meli.app.getSuccess
-import com.test.meli.app.isFailure
-import com.test.meli.app.isSuccess
 import com.test.meli.domain.exception.UnknownError
 import com.test.meli.domain.model.ResponseQuery
 import com.test.meli.domain.repository.SearchProductRepository
@@ -29,7 +23,7 @@ class SearchProductUCTest {
         val responseQuery: ResponseQuery = mockk()
         every { searchProductRepository.getProductQuery(query) } answers {
             flowOf(
-                Result.Success(
+                Result.success(
                     responseQuery
                 )
             )
@@ -40,8 +34,8 @@ class SearchProductUCTest {
 
         // Then
         response.collect { result ->
-            assert(result.isSuccess())
-            Assert.assertEquals(result.getSuccess(), responseQuery)
+            assert(result.isSuccess)
+            Assert.assertEquals(result.getOrNull(), responseQuery)
         }
         verify { searchProductRepository.getProductQuery(query) }
         confirmVerified(searchProductRepository)
@@ -53,7 +47,7 @@ class SearchProductUCTest {
         val query = "moto"
         every { searchProductRepository.getProductQuery(query) } answers {
             flowOf(
-                Result.Failure(
+                Result.failure(
                     UnknownError
                 )
             )
@@ -64,11 +58,10 @@ class SearchProductUCTest {
 
         // Then
         response.collect { result ->
-            assert(result.isFailure())
-            Assert.assertEquals(result.getFailure(), UnknownError)
+            assert(result.isFailure)
+            Assert.assertEquals(result.exceptionOrNull(), UnknownError)
         }
         verify { searchProductRepository.getProductQuery(query) }
         confirmVerified(searchProductRepository)
     }
 }
-*/

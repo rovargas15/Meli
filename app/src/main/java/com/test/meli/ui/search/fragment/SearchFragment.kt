@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -56,13 +55,12 @@ class SearchFragment : Fragment() {
                     rcvProduct.gone()
                 }
                 is SearchState.Success -> {
-                    lavLoader.gone()
                     rcvProduct.visible()
                     productAdapter.products = state.responseQuery.products
+                    lavLoader.gone()
                 }
                 is SearchState.Error -> {
                     lavLoader.gone()
-                    Toast.makeText(context, state.message.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
         }

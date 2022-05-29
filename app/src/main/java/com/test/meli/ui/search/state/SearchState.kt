@@ -4,6 +4,6 @@ import com.test.meli.domain.model.ResponseQuery
 
 sealed class SearchState {
     object Loading : SearchState()
-    data class Error(val message: String?) : SearchState()
+    object Error : SearchState()
     data class Success(val responseQuery: ResponseQuery) : SearchState()
 }

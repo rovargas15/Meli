@@ -1,5 +1,6 @@
 package com.test.meli.data.repository
 
+import com.test.meli.data.exception.HttpErrors
 import com.test.meli.domain.exception.BadRequestException
 import com.test.meli.domain.exception.CommonErrors
 import com.test.meli.domain.exception.InternalErrorException
@@ -22,7 +23,7 @@ class DomainExceptionRepositoryImplTest {
 
     private val commonErrors: CommonErrors = mockk(relaxed = true)
     private val exceptionLogin: DomainExceptionRepository =
-        DomainExceptionRepositoryImpl(commonErrors)
+        DomainExceptionRepositoryImpl(commonErrors, HttpErrors())
 
     @Test
     fun giveExceptionWhenGetHttpErrorThenReturnBadRequestException() {

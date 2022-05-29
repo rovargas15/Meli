@@ -53,15 +53,15 @@ class SearchProductRepositoryImplTest {
                 mockk {
                     every { id } returns "ABC123"
                     every { title } returns "Motorola"
-                    every { price } returns 12345
+                    every { price } returns 12345.0
                     every { condition } returns "New"
                     every { acceptsMercadoPago } returns true
-                    every { addressDTO } returns mockk {
+                    every { address } returns mockk {
                         every { cityName } returns "cityName"
                         every { stateId } returns "stateId"
                         every { stateName } returns "stateName"
                     }
-                    every { attributeDTO } returns listOf(
+                    every { attribute } returns listOf(
                         mockk {
                             every { id } returns "1"
                             every { attributeGroupId } returns "attributeGroupId"
@@ -76,7 +76,7 @@ class SearchProductRepositoryImplTest {
                     every { availableQuantity } returns 12
                     every { seller } returns mockk {
                         every { id } returns 1
-                        every { eshopDTO } returns mockk {
+                        every { eshop } returns mockk {
                             every { eshopId } returns 1
                             every { eshopLogoUrl } returns "url"
                             every { nickName } returns "nickName"
@@ -96,8 +96,6 @@ class SearchProductRepositoryImplTest {
                         every { storePickUp } returns true
                         every { tags } returns emptyList()
                     }
-                    every { soldQuantity } returns 1
-                    every { stopTime } returns "stopTime"
                     every { thumbnail } returns "thumbnail"
                 }
             )
@@ -107,7 +105,7 @@ class SearchProductRepositoryImplTest {
                 mockk {
                     every { id } returns "ABC123"
                     every { title } returns "Motorola"
-                    every { price } returns 12345
+                    every { price } returns 12345.0
                     every { condition } returns "New"
                     every { acceptsMercadoPago } returns true
                     every { address } returns mockk {
@@ -150,8 +148,6 @@ class SearchProductRepositoryImplTest {
                         every { storePickUp } returns true
                         every { tags } returns emptyList()
                     }
-                    every { soldQuantity } returns 1
-                    every { stopTime } returns "stopTime"
                     every { thumbnail } returns "thumbnail"
                 }
             )

@@ -1,5 +1,6 @@
 package com.test.meli.di.domain
 
+import com.test.meli.data.exception.HttpErrors
 import com.test.meli.data.repository.DomainExceptionRepositoryImpl
 import com.test.meli.domain.exception.CommonErrors
 import com.test.meli.domain.repository.DomainExceptionRepository
@@ -19,8 +20,13 @@ object ExceptionModule {
 
     @Provides
     @ViewModelScoped
+    fun httpErrorsProvider() = HttpErrors()
+
+    @Provides
+    @ViewModelScoped
     fun domainExceptionRepositoryProvider(
-        commonErrors: CommonErrors
+        commonErrors: CommonErrors,
+        httpErrors: HttpErrors
     ): DomainExceptionRepository =
-        DomainExceptionRepositoryImpl(commonErrors)
+        DomainExceptionRepositoryImpl(commonErrors, httpErrors)
 }

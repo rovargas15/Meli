@@ -14,9 +14,8 @@ import retrofit2.HttpException
 
 class HttpErrorsTest {
 
-    private val httpErrors = HttpErrors
-
     private val exception: HttpException = mockk(relaxed = true)
+    private val httpErrors = HttpErrors()
 
     @Test
     fun giveExceptionWhenGetHttpErrorThenReturnBadRequestException() {

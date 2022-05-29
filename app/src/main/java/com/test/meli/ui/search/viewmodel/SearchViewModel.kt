@@ -33,7 +33,7 @@ class SearchViewModel @Inject constructor(
                     _productLiveData.value = SearchState.Success(it)
                 },
                 onFailure = {
-                    _productLiveData.value = SearchState.Error(it.message)
+                    _productLiveData.value = SearchState.Error
                 }
             )
         }.onStart {

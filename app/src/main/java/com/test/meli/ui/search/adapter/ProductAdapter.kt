@@ -7,12 +7,12 @@ import coil.load
 import com.test.meli.R
 import com.test.meli.databinding.ItemProductBinding
 import com.test.meli.domain.model.Product
-import com.test.meli.ui.ext.Condition
 import com.test.meli.ui.ext.basicDiffUtil
 import com.test.meli.ui.ext.formatCurrency
 import com.test.meli.ui.ext.gone
 import com.test.meli.ui.ext.setSafeOnClickListener
 import com.test.meli.ui.ext.visible
+import com.test.meli.ui.util.Condition
 
 class ProductAdapter(val callBack: (Product) -> Unit) :
     RecyclerView.Adapter<ProductAdapter.ViewHolder>() {

@@ -1,7 +1,5 @@
 package com.test.meli.data.exception
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
 import com.test.meli.domain.exception.BadRequestException
 import com.test.meli.domain.exception.DomainException
 import com.test.meli.domain.exception.HttpErrorCode
@@ -12,12 +10,7 @@ import com.test.meli.domain.exception.UnknownError
 import retrofit2.HttpException
 import javax.net.ssl.HttpsURLConnection
 
-object HttpErrors {
-
-    private val moshi = Moshi.Builder()
-        .build()
-    private val jsonAdapter: JsonAdapter<DomainException> =
-        moshi.adapter(DomainException::class.java)
+class HttpErrors {
 
     private val httpErrors = mapOf(
         HttpsURLConnection.HTTP_BAD_REQUEST to BadRequestException,
@@ -38,7 +31,7 @@ object HttpErrors {
         return try {
             var jsonString = exception.response()?.errorBody()?.string()
             if (jsonString.isNullOrEmpty()) jsonString = "{}"
-            jsonAdapter.fromJson(jsonString)!!
+            DomainException(jsonString)
         } catch (exception_: Exception) {
             UnknownError
         }
