@@ -1,9 +1,5 @@
 package com.test.meli.data.repository
 
-import com.test.meli.app.getFailure
-import com.test.meli.app.getSuccess
-import com.test.meli.app.isFailure
-import com.test.meli.app.isSuccess
 import com.test.meli.data.endpoint.SearchProductApi
 import com.test.meli.data.model.ResponseQueryDTO
 import com.test.meli.domain.exception.UnknownError
@@ -39,8 +35,8 @@ class SearchProductRepositoryImplTest {
 
         // Then
         response.collect { result ->
-            assert(result.isSuccess())
-            Assert.assertEquals(result.getSuccess()?.results, emptyList<ResponseQuery>())
+            assert(result.isSuccess)
+            Assert.assertEquals(result.getOrNull()?.products, emptyList<ResponseQuery>())
         }
         coVerify(exactly = 1) {
             searchProductApi.searchProduct(query)
@@ -61,7 +57,6 @@ class SearchProductRepositoryImplTest {
                     every { condition } returns "New"
                     every { acceptsMercadoPago } returns true
                     every { addressDTO } returns mockk {
-                        every { cityId } returns "city"
                         every { cityName } returns "cityName"
                         every { stateId } returns "stateId"
                         every { stateName } returns "stateName"
@@ -108,7 +103,7 @@ class SearchProductRepositoryImplTest {
             )
         }
         val responseQuery = mockk<ResponseQuery> {
-            every { results } returns listOf(
+            every { products } returns listOf(
                 mockk {
                     every { id } returns "ABC123"
                     every { title } returns "Motorola"
@@ -171,8 +166,8 @@ class SearchProductRepositoryImplTest {
 
         // Then
         response.collect { result ->
-            assert(result.isSuccess())
-            Assert.assertEquals(result.getSuccess(), responseQuery)
+            assert(result.isSuccess)
+            Assert.assertEquals(result.getOrNull(), responseQuery)
         }
         coVerify(exactly = 1) {
             searchProductApi.searchProduct(query)
@@ -194,8 +189,11 @@ class SearchProductRepositoryImplTest {
 
         // Then
         response.collect { result ->
-            assert(result.isFailure())
-            Assert.assertEquals(result.getFailure(), UnknownError)
+            assert(result.isFailure)
+            Assert.assertEquals(result.exceptionOrNull(), UnknownError)
+            result.onFailure { error ->
+                Assert.assertEquals(error, UnknownError)
+            }
         }
         coVerify(exactly = 1) {
             searchProductApi.searchProduct(query)

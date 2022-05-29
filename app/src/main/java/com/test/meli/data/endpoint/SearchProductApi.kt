@@ -12,4 +12,4 @@ interface SearchProductApi {
     ): ResponseQueryDTO
 }
 
-private const val GET_SEARCH_PRODUCT = "search"
+private const val GET_SEARCH_PRODUCT = "sites/MLA/search"

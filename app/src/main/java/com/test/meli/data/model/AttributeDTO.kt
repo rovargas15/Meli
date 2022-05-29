@@ -1,8 +1,10 @@
 package com.test.meli.data.model
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import com.test.meli.domain.model.Attribute
 
+@JsonClass(generateAdapter = true)
 data class AttributeDTO(
     @Json(name = "id")
     val id: String,

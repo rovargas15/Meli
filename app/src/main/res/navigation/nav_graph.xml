@@ -7,8 +7,7 @@
 
     <fragment
         android:id="@+id/SearchFragment"
-        android:name="com.test.meli.ui.search.SearchFragment"
-        android:label="@string/first_fragment_label"
+        android:name="com.test.meli.ui.search.fragment.SearchFragment"
         tools:layout="@layout/fragment_search">
 
         <action
@@ -17,12 +16,6 @@
     </fragment>
     <fragment
         android:id="@+id/DetailsFragment"
-        android:name="com.test.meli.ui.detail.DetailsFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_details">
-
-        <action
-            android:id="@+id/action_DetailsFragment_to_SearchFragment"
-            app:destination="@id/SearchFragment" />
-    </fragment>
+        android:name="com.test.meli.ui.search.fragment.DetailsFragment"
+        tools:layout="@layout/fragment_details"/>
 </navigation>

@@ -1,13 +1,12 @@
 package com.test.meli.di.network
 
 import android.app.Application
-import com.test.meli.BuildConfig
+import com.squareup.moshi.Moshi
 import com.test.meli.R
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.Dispatchers
 import okhttp3.Dispatcher
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -23,17 +22,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun coroutineDispatcherProvider() = Dispatchers.IO
-
-    @Provides
-    @Singleton
     fun httpInterceptor(): Interceptor {
         val interceptor = HttpLoggingInterceptor()
-        interceptor.level = if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.NONE
-        }
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
         return interceptor
     }
 
@@ -67,8 +58,10 @@ object NetworkModule {
         context: Application
     ): Retrofit {
         val urlBase = context.getString(R.string.base_url)
+        val moshi = Moshi.Builder()
+            .build()
         return Retrofit.Builder()
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .baseUrl(urlBase)
             .build()

@@ -5,7 +5,7 @@ import com.test.meli.data.repository.SearchProductRepositoryImpl
 import com.test.meli.domain.repository.DomainExceptionRepository
 import com.test.meli.domain.repository.SearchProductRepository
 import com.test.meli.domain.uc.SearchProductUC
-import com.test.meli.ui.search.SearchViewModel
+import com.test.meli.ui.search.viewmodel.SearchViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

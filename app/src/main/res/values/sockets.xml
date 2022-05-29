@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="base_url" translatable="false">https://api.mercadolibre.com/sites/MLA/</string>
+    <string name="base_url" translatable="false">https://api.mercadolibre.com/</string>
 </resources>

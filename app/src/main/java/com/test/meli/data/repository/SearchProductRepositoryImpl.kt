@@ -1,8 +1,7 @@
 package com.test.meli.data.repository
 
-import com.test.meli.app.Result
+import android.util.Log
 import com.test.meli.data.endpoint.SearchProductApi
-import com.test.meli.domain.model.ResponseQuery
 import com.test.meli.domain.repository.DomainExceptionRepository
 import com.test.meli.domain.repository.SearchProductRepository
 import kotlinx.coroutines.flow.catch
@@ -13,10 +12,11 @@ class SearchProductRepositoryImpl(
     private val domainExceptionRepository: DomainExceptionRepository
 ) : SearchProductRepository {
 
-    override fun getProductQuery(query: String) = flow<Result<ResponseQuery>> {
+    override fun getProductQuery(query: String) = flow {
         val response = searchProductApi.searchProduct(query)
-        emit(Result.Success(response.toResponseQuery()))
+        emit(Result.success(response.toResponseQuery()))
     }.catch { error ->
-        emit(Result.Failure(domainExceptionRepository.manageError(error)))
+        Log.e("SearchProductRepositoryImpl",error.message.toString())
+        emit(Result.failure(domainExceptionRepository.manageError(error)))
     }
 }

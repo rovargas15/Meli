@@ -1,12 +1,9 @@
 <resources>
     <string name="app_name">Meli</string>
-    <string name="title_activity_main">MainActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="search_hint">Buscar en Mercado Libre</string>
+    <string name="product_free_shipping">Envio gratis</string>
+    <string name="condition_new">Nuevo</string>
+    <string name="condition_use">Usado</string>
+    <string name="sold_by">Vendido por s%</string>
+    <string name="product_attributes">Caractéristicas del producto</string>
 </resources>

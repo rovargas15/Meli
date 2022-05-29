@@ -14,7 +14,8 @@ import javax.net.ssl.HttpsURLConnection
 
 object HttpErrors {
 
-    private val moshi = Moshi.Builder().build()
+    private val moshi = Moshi.Builder()
+        .build()
     private val jsonAdapter: JsonAdapter<DomainException> =
         moshi.adapter(DomainException::class.java)
 

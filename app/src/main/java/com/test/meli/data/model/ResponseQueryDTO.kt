@@ -1,10 +1,10 @@
 package com.test.meli.data.model
 
-import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import com.test.meli.domain.model.ResponseQuery
 
+@JsonClass(generateAdapter = true)
 data class ResponseQueryDTO(
-    @Json(name = "results")
     val results: List<ResultDTO>,
 ) {
     fun toResponseQuery(): ResponseQuery {
