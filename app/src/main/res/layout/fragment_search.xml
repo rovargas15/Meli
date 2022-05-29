@@ -15,17 +15,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/et_search"
-            style="@style/EditTextSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:iconifiedByDefault="false"
             android:layout_margin="@dimen/margin_small"
             android:background="@drawable/rounded_search_view"
             android:drawablePadding="@dimen/margin_small"
-            android:hint="@string/search_hint"
-            android:imeOptions="actionSearch"
-            android:singleLine="true" />
+            app:queryHint="@string/search_hint" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView

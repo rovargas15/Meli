@@ -2,8 +2,6 @@ package com.test.meli.ui.ext
 
 import android.os.SystemClock
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 
 private const val DEFAULT_INTERVAL: Int = 1000
 private const val INITIAL_INTERVAL: Long = 0
@@ -28,19 +26,4 @@ fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
             onSafeClick(it)
         }
     setOnClickListener(safeClickListener)
-}
-
-fun EditText.onClickSearchButton(callBack: () -> Unit) {
-    setSafeOnClickListener {
-        this.setOnEditorActionListener { _, actionId, _ ->
-            when (actionId) {
-                EditorInfo.IME_ACTION_SEARCH -> {
-                    callBack()
-                    hideKeyboard()
-                    true
-                }
-                else -> false
-            }
-        }
-    }
 }

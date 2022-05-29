@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,7 +14,7 @@ import com.test.meli.R
 import com.test.meli.databinding.FragmentSearchBinding
 import com.test.meli.domain.model.Product
 import com.test.meli.ui.ext.gone
-import com.test.meli.ui.ext.onClickSearchButton
+import com.test.meli.ui.ext.hideKeyboard
 import com.test.meli.ui.ext.setSafeOnClickListener
 import com.test.meli.ui.ext.visible
 import com.test.meli.ui.search.adapter.ProductAdapter
@@ -79,12 +81,30 @@ class SearchFragment : Fragment() {
 
     private fun initListener() {
         with(binding) {
-            etSearch.onClickSearchButton {
-                iLayoutError.txvRetry.callOnClick()
-            }
-            iLayoutError.txvRetry.setSafeOnClickListener {
-                etSearch.text?.toString()?.let { query ->
-                    searchViewModel.searchProduct(query)
+            with(etSearch) {
+                setOnQueryTextListener(object :
+                        SearchView.OnQueryTextListener,
+                        OnQueryTextListener {
+                        override fun onQueryTextSubmit(query: String?): Boolean {
+                            query?.let {
+                                searchViewModel.searchProduct(it)
+                            }
+                            hideKeyboard()
+                            return true
+                        }
+
+                        override fun onQueryTextChange(newText: String?) = false
+                    })
+
+                etSearch.setOnSearchClickListener {
+                    iLayoutError.txvRetry.callOnClick()
+                }
+
+                iLayoutError.txvRetry.setSafeOnClickListener {
+                    etSearch.query?.let {
+                        searchViewModel.searchProduct(it.toString())
+                        hideKeyboard()
+                    }
                 }
             }
         }

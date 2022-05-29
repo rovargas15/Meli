@@ -14,17 +14,9 @@
         <!-- Customize your theme here. -->
     </style>
 
-
-
     <style name="Theme.Meli.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="EditTextSearch" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:drawableStart">@drawable/ic_search</item>
-        <item name="android:textColorHint">@color/grey</item>
-        <item name="hintEnabled">true</item>
-    </style>
 </resources>
