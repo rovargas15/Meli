@@ -19,4 +19,48 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="TextViewBodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="textOutlineColor">@color/black</item>
+    </style>
+
+    <style name="TextViewBody" parent="TextAppearance.Material3.BodyMedium">
+        <item name="textOutlineColor">@color/black</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="TextViewBodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="textOutlineColor">@color/black</item>
+
+    </style>
+
+    <style name="TextViewH1" parent="TextAppearance.Material3.TitleLarge">
+        <item name="textOutlineColor">@color/black</item>
+
+    </style>
+
+    <style name="TextViewH2" parent="TextAppearance.Material3.TitleMedium">
+        <item name="textOutlineColor">@color/black</item>
+
+    </style>
+
+    <style name="TextViewH3" parent="TextAppearance.Material3.TitleSmall">
+        <item name="textOutlineColor">@color/black</item>
+
+    </style>
+
+    <style name="TextViewLabelGreen" parent="TextAppearance.Material3.LabelSmall">
+        <item name="textOutlineColor">@color/black</item>
+        <item name="android:textColor">@color/green</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextViewTableRow" parent="TextAppearance.Material3.BodyLarge">
+        <item name="textOutlineColor">@color/black</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">@dimen/size_0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/margin_small</item>
+    </style>
 </resources>

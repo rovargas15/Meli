@@ -25,6 +25,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txv_name_product"
+            style="@style/TextViewBody"
             android:layout_width="@dimen/size_0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -36,9 +37,9 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txv_price"
+            style="@style/TextViewH1"
             android:layout_width="@dimen/size_0dp"
             android:layout_height="wrap_content"
-            android:textSize="19sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,10 +48,9 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txv_condition"
+            style="@style/TextViewLabelGreen"
             android:layout_width="@dimen/size_0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/green"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txv_price"
@@ -58,20 +58,19 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txv_free_shipping"
+            style="@style/TextViewLabelGreen"
             android:layout_width="@dimen/size_0dp"
             android:layout_height="wrap_content"
             android:text="@string/product_free_shipping"
-            android:textColor="@color/green"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txv_condition" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txv_shops_name"
+            style="@style/TextViewBodySmall"
             android:layout_width="@dimen/size_0dp"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txv_free_shipping"

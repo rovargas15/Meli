@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,6 +34,7 @@ class SearchViewModel @Inject constructor(
                     _productLiveData.value = SearchState.Success(it)
                 },
                 onFailure = {
+                    Timber.tag("SearchViewModel").e(it)
                     _productLiveData.value = SearchState.Error
                 }
             )
