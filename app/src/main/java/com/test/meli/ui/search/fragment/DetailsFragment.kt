@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableLayout
-import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import coil.size.Scale
 import com.test.meli.R
@@ -15,6 +15,7 @@ import com.test.meli.databinding.FragmentDetailsBinding
 import com.test.meli.domain.model.Attribute
 import com.test.meli.domain.model.Product
 import com.test.meli.ui.ext.createRow
+import com.test.meli.ui.ext.createTable
 import com.test.meli.ui.ext.createTextview
 import com.test.meli.ui.ext.formatCurrency
 import com.test.meli.ui.ext.gone
@@ -22,6 +23,8 @@ import com.test.meli.ui.ext.visible
 import com.test.meli.ui.search.viewmodel.SearchViewModel
 import com.test.meli.ui.util.Condition
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
@@ -79,56 +82,50 @@ class DetailsFragment : Fragment() {
                 scale(Scale.FILL)
                 size(800)
             }
+            txvLocationSeller.text = getString(R.string.location_shop, product.address?.cityName)
+            txvReputationSeller.text = getString(
+                R.string.reputation_seller,
+                product.seller.sellerReputation?.powerSellerStatus
+            )
+            txvNameShop.text = getString(R.string.sold_by, product.seller.eshop?.nickName)
         }
         createTable(product.attributes)
     }
 
-    private fun createTable(attributes: List<Attribute>) {
+    private fun createTable(attributes: List<Attribute>) =
+        lifecycleScope.launch(context = Dispatchers.IO) {
+            val tableLayout = context?.createTable()
+            attributes.forEachIndexed { index, attribute ->
+                val txvValueName = context?.createTextview {
+                    text = attribute.name
+                }
 
-        attributes.forEach { attribute ->
-            val tableLayout = TableLayout(context).apply {
-                layoutParams = TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT
-                )
-            }
-
-            val txvTitle = context?.createTextview {
-                text = attribute.attributeGroupName
-            }
-
-            val titleRow = context?.createRow(txvTitle)
-            tableLayout.addView(titleRow)
-
-            val txvValueName = context?.createTextview {
-                text = attribute.name
-            }
-
-            val rowValue = context?.createRow(txvValueName)
-
-            if (attribute.valueName.isNullOrEmpty()) {
-                attribute.values.forEach {
-                    if (it.isNotEmpty()) {
-                        val txvValue = context?.createTextview {
-                            text = it
-                        }
-                        rowValue?.addView(txvValue)
-                        tableLayout.addView(rowValue)
+                val rowValue = context?.createRow(txvValueName) {
+                    if (index.mod(NUMBER_PAR) == 0) {
+                        setBackgroundColor(ContextCompat.getColor(context, R.color.grey))
                     }
                 }
-            } else {
-                val txvValue = TextView(context)
-                txvValue.text = attribute.valueName
-                rowValue?.addView(txvValue)
-                tableLayout.addView(rowValue)
-            }
+                val txvValue = context?.createTextview()
 
-            binding.cnlAttributes.addView(tableLayout)
+                if (attribute.valueName.isNullOrEmpty()) {
+                    attribute.values.forEach {
+                        if (it.isNotEmpty()) {
+                            txvValue?.text = it
+                        }
+                    }
+                } else {
+                    txvValue?.text = attribute.valueName
+                }
+                rowValue?.addView(txvValue)
+                tableLayout?.addView(rowValue)
+            }
+            binding.lnlAttributes.addView(tableLayout)
         }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
+
+const val NUMBER_PAR = 2

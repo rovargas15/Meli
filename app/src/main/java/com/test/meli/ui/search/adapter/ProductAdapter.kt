@@ -77,7 +77,7 @@ class ProductAdapter(val callBack: (Product) -> Unit) :
                     size(500)
                 }
                 product.seller.eshop?.nickName?.let {
-                    txvShopsName.text = it
+                    txvShopsName.text = context.getString(R.string.sold_by, it)
                     txvShopsName.visible()
                 } ?: run {
                     txvShopsName.gone()

@@ -96,14 +96,59 @@
                 app:layout_constraintTop_toBottomOf="@id/txv_detail_free_shipping" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/cnl_attributes"
+                android:id="@+id/lnl_attributes"
                 android:layout_width="@dimen/size_0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_medium"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txv_attributes" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txv_seller_info"
+                style="@style/TextViewH2"
+                android:layout_width="@dimen/size_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/seller_info"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lnl_attributes" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txv_name_shop"
+                style="@style/TextViewBody"
+                android:layout_width="@dimen/size_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/sold_by"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txv_seller_info" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txv_location_seller"
+                style="@style/TextViewBody"
+                android:layout_width="@dimen/size_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/location_shop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txv_name_shop" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txv_reputation_seller"
+                style="@style/TextViewBody"
+                android:layout_width="@dimen/size_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="@string/reputation_seller"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txv_location_seller" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

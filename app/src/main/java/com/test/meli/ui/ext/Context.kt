@@ -3,9 +3,25 @@ package com.test.meli.ui.ext
 import android.content.Context
 import android.os.Build
 import android.view.View
+import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.view.setPadding
 import com.test.meli.R
+
+fun Context.createTable(
+    view: View? = null,
+    block: (TableLayout.() -> Unit)? = null
+): TableLayout {
+    val table = TableLayout(this).apply {
+        weightSum = 2f
+        view?.let {
+            addView(it)
+        }
+    }
+    block?.let { it(table) }
+    return table
+}
 
 fun Context.createRow(
     view: View?,
@@ -28,6 +44,7 @@ fun Context.createTextview(
         } else {
             setTextAppearance(context, R.style.TextViewTableRow)
         }
+        setPadding(30)
     }
     block?.let { it(text) }
     return text
