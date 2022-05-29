@@ -8,7 +8,7 @@
     <string name="sold_by">Vendido por %s</string>
     <string name="product_attributes">Caractéristicas del producto</string>
     <string name="seller_info">Información del vendedor</string>
-    <string name="location_shop">Ubicación %s</string>
+    <string name="location_shop">Ubicación %s, %s</string>
     <string name="reputation_seller">Mercadolider %s</string>
     <string name="btn_retry">Volver a intentar</string>
 

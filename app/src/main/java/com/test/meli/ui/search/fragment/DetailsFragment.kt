@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TableLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,8 +24,8 @@ import com.test.meli.ui.ext.visible
 import com.test.meli.ui.search.viewmodel.SearchViewModel
 import com.test.meli.ui.util.Condition
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
@@ -82,18 +83,37 @@ class DetailsFragment : Fragment() {
                 scale(Scale.FILL)
                 size(800)
             }
-            txvLocationSeller.text = getString(R.string.location_shop, product.address?.cityName)
-            txvReputationSeller.text = getString(
-                R.string.reputation_seller,
-                product.seller.sellerReputation?.powerSellerStatus
+            txvLocationSeller.text = getString(
+                R.string.location_shop,
+                product.address?.cityName,
+                product.address?.stateName
             )
-            txvNameShop.text = getString(R.string.sold_by, product.seller.eshop?.nickName)
+            product.seller.sellerReputation?.powerSellerStatus?.let {
+                if (it.isNotEmpty()) {
+                    txvReputationSeller.text = getString(
+                        R.string.reputation_seller,
+                        it
+                    )
+                    txvReputationSeller.visible()
+                }
+            } ?: run {
+                txvReputationSeller.gone()
+            }
+
+            product.seller.eshop?.nickName?.let {
+                if (it.isNotEmpty()) {
+                    txvNameShop.text = getString(R.string.sold_by, it)
+                    txvNameShop.visible()
+                }
+            } ?: run {
+                txvNameShop.gone()
+            }
         }
         createTable(product.attributes)
     }
 
-    private fun createTable(attributes: List<Attribute>) =
-        lifecycleScope.launch(context = Dispatchers.IO) {
+    private fun createTable(attributes: List<Attribute>) {
+        val table: Deferred<TableLayout?> = lifecycleScope.async {
             val tableLayout = context?.createTable()
             attributes.forEachIndexed { index, attribute ->
                 val txvValueName = context?.createTextview {
@@ -119,8 +139,10 @@ class DetailsFragment : Fragment() {
                 rowValue?.addView(txvValue)
                 tableLayout?.addView(rowValue)
             }
-            binding.lnlAttributes.addView(tableLayout)
+            tableLayout
         }
+        binding.lnlAttributes.addView(table.getCompleted())
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
