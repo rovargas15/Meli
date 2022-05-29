@@ -13,6 +13,7 @@ import com.test.meli.databinding.FragmentSearchBinding
 import com.test.meli.domain.model.Product
 import com.test.meli.ui.ext.gone
 import com.test.meli.ui.ext.onClickSearchButton
+import com.test.meli.ui.ext.setSafeOnClickListener
 import com.test.meli.ui.ext.visible
 import com.test.meli.ui.search.adapter.ProductAdapter
 import com.test.meli.ui.search.state.SearchState
@@ -52,6 +53,7 @@ class SearchFragment : Fragment() {
             when (state) {
                 is SearchState.Loading -> {
                     lavLoader.visible()
+                    iLayoutError.root.gone()
                     rcvProduct.gone()
                 }
                 is SearchState.Success -> {
@@ -61,6 +63,7 @@ class SearchFragment : Fragment() {
                 }
                 is SearchState.Error -> {
                     lavLoader.gone()
+                    iLayoutError.root.visible()
                 }
             }
         }
@@ -77,6 +80,9 @@ class SearchFragment : Fragment() {
     private fun initListener() {
         with(binding) {
             etSearch.onClickSearchButton {
+                iLayoutError.txvRetry.callOnClick()
+            }
+            iLayoutError.txvRetry.setSafeOnClickListener {
                 etSearch.text?.toString()?.let { query ->
                     searchViewModel.searchProduct(query)
                 }

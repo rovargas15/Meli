@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Meli" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Meli" parent="Theme.Material3.DayNight">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/yellow_primary</item>
         <item name="colorPrimaryVariant">@color/yellow_variant</item>
@@ -14,14 +14,12 @@
         <!-- Customize your theme here. -->
     </style>
 
+
+
     <style name="Theme.Meli.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="Theme.Meli.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.Meli.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="EditTextSearch" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="android:textColor">@color/black</item>
