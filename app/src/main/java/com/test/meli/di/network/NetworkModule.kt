@@ -2,6 +2,7 @@ package com.test.meli.di.network
 
 import android.app.Application
 import com.squareup.moshi.Moshi
+import com.test.meli.BuildConfig
 import com.test.meli.R
 import dagger.Module
 import dagger.Provides
@@ -24,7 +25,11 @@ object NetworkModule {
     @Singleton
     fun httpInterceptor(): Interceptor {
         val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        interceptor.level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BODY
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
         return interceptor
     }
 
