@@ -67,8 +67,6 @@ class SearchProductRepositoryImplTest {
                             every { attributeGroupId } returns "attributeGroupId"
                             every { attributeGroupName } returns "attributeGroupName"
                             every { name } returns "name"
-                            every { source } returns 1
-                            every { valueId } returns "valueId"
                             every { valueName } returns "valueName"
                         }
                     )
@@ -119,8 +117,6 @@ class SearchProductRepositoryImplTest {
                             every { attributeGroupId } returns "attributeGroupId"
                             every { attributeGroupName } returns "attributeGroupName"
                             every { name } returns "name"
-                            every { source } returns 1
-                            every { valueId } returns "valueId"
                             every { valueName } returns "valueName"
                         }
                     )

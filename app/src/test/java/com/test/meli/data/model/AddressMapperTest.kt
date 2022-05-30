@@ -8,15 +8,15 @@ class AddressMapperTest {
     @Test
     fun giveAddressDTOWhenMapperThenReturnAddress() {
         val address = AddressDTO(
-            cityName = "cityName",
-            stateId = "stateId",
-            stateName = "stateName"
+            cityName = null,
+            stateId = null,
+            stateName = null
         )
 
         val result = address.toDomainAddress()
 
-        assertEquals(result.cityName, "cityName")
-        assertEquals(result.stateId, "stateId")
-        assertEquals(result.stateName, "stateName")
+        assertEquals(result.cityName, null)
+        assertEquals(result.stateId, null)
+        assertEquals(result.stateName, null)
     }
 }

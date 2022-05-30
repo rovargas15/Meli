@@ -8,15 +8,15 @@ class EshopMapperTest {
     @Test
     fun giveAttributeDTOWhenMapperThenReturnAttribute() {
         val eshop = EshopDTO(
-            eshopId = 1,
-            eshopLogoUrl = "url",
-            nickName = "name"
+            eshopId = null,
+            eshopLogoUrl = null,
+            nickName = null
         )
 
         val result = eshop.toDomainEshop()
 
-        assertEquals(result.eshopId, 1)
-        assertEquals(result.eshopLogoUrl, "url")
-        assertEquals(result.nickName, "name")
+        assertEquals(result.eshopId, null)
+        assertEquals(result.eshopLogoUrl, null)
+        assertEquals(result.nickName, null)
     }
 }
