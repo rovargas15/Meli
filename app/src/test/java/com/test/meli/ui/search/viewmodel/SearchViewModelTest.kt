@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.test.meli.domain.exception.UnknownError
 import com.test.meli.domain.model.Product
 import com.test.meli.domain.model.ResponseQuery
-import com.test.meli.domain.uc.SearchProductUC
+import com.test.meli.domain.uc.GetProductByUC
 import com.test.meli.ui.search.state.SearchState
 import com.test.meli.util.MainDispatcherRule
 import com.test.meli.util.getOrAwaitValue
@@ -25,42 +25,42 @@ class SearchViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val searchProductUC: SearchProductUC = mockk()
+    private val getProductByUC: GetProductByUC = mockk()
     private val searchViewModel =
-        SearchViewModel(searchProductUC, mainDispatcherRule.testDispatcher)
+        SearchViewModel(getProductByUC, mainDispatcherRule.testDispatcher)
 
     @Test
     fun giveEmptyWhenGeProductThenReturnResultResultSuccess() = mainDispatcherRule.runBlockingTest {
         // Give
         val query = "test"
         val responseQuery: ResponseQuery = mockk()
-        every { searchProductUC.invoke(query) } answers { flowOf(Result.success(responseQuery)) }
+        every { getProductByUC.invoke(query) } answers { flowOf(Result.success(responseQuery)) }
 
         // When
-        searchViewModel.searchProduct(query)
+        searchViewModel.getProductQuery(query)
 
         // Then
         val response = searchViewModel.productLiveData.getOrAwaitValue()
         assert(response is SearchState.Success)
         Assert.assertEquals((response as SearchState.Success).responseQuery, responseQuery)
-        verify(exactly = 1) { searchProductUC.invoke(query) }
-        confirmVerified(searchProductUC)
+        verify(exactly = 1) { getProductByUC.invoke(query) }
+        confirmVerified(getProductByUC)
     }
 
     @Test
     fun giveDataWhenGeProductThenReturnResultFailure() {
         // Give
         val query = "test"
-        every { searchProductUC.invoke(query) } answers { flowOf(Result.failure(UnknownError)) }
+        every { getProductByUC.invoke(query) } answers { flowOf(Result.failure(UnknownError)) }
 
         // When
-        searchViewModel.searchProduct(query)
+        searchViewModel.getProductQuery(query)
 
         // Then
         val response = searchViewModel.productLiveData.getOrAwaitValue()
         assert(response is SearchState.Error)
-        verify(exactly = 1) { searchProductUC.invoke(query) }
-        confirmVerified(searchProductUC)
+        verify(exactly = 1) { getProductByUC.invoke(query) }
+        confirmVerified(getProductByUC)
     }
 
     @Test

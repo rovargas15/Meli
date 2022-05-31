@@ -89,7 +89,7 @@ class SearchFragment : Fragment() {
                         OnQueryTextListener {
                         override fun onQueryTextSubmit(query: String?): Boolean {
                             query?.let {
-                                searchViewModel.searchProduct(it)
+                                searchViewModel.getProductQuery(it)
                             }
                             hideKeyboard()
                             return true
@@ -104,7 +104,7 @@ class SearchFragment : Fragment() {
 
                 iLayoutError.txvRetry.setSafeOnClickListener {
                     etSearch.query?.let {
-                        searchViewModel.searchProduct(it.toString())
+                        searchViewModel.getProductQuery(it.toString())
                         hideKeyboard()
                     }
                 }

@@ -4,10 +4,10 @@ import com.test.meli.data.model.ResponseQueryDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface SearchProductApi {
+interface ProductApi {
 
     @GET(GET_SEARCH_PRODUCT)
-    suspend fun searchProduct(
+    suspend fun getProductByQuery(
         @Query("q") q: String
     ): ResponseQueryDTO
 }

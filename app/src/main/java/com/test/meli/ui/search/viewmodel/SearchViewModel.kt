@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.test.meli.domain.model.Product
-import com.test.meli.domain.uc.SearchProductUC
+import com.test.meli.domain.uc.GetProductByUC
 import com.test.meli.ui.search.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchProductUC: SearchProductUC,
+    private val getProductByUC: GetProductByUC,
     private val coroutineDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -30,8 +30,8 @@ class SearchViewModel @Inject constructor(
     val productDetailLiveData: LiveData<Product>
         get() = _productDetailLiveData
 
-    fun searchProduct(query: String) {
-        searchProductUC.invoke(query).map { result ->
+    fun getProductQuery(query: String) {
+        getProductByUC.invoke(query).map { result ->
             result.fold(
                 onSuccess = {
                     _productLiveData.postValue(SearchState.Success(it))

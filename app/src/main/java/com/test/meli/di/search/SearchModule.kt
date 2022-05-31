@@ -1,10 +1,10 @@
 package com.test.meli.di.search
 
-import com.test.meli.data.endpoint.SearchProductApi
-import com.test.meli.data.repository.SearchProductRepositoryImpl
+import com.test.meli.data.endpoint.ProductApi
+import com.test.meli.data.repository.ProductRepositoryImpl
 import com.test.meli.domain.repository.DomainExceptionRepository
-import com.test.meli.domain.repository.SearchProductRepository
-import com.test.meli.domain.uc.SearchProductUC
+import com.test.meli.domain.repository.ProductRepository
+import com.test.meli.domain.uc.GetProductByUC
 import com.test.meli.ui.search.viewmodel.SearchViewModel
 import dagger.Module
 import dagger.Provides
@@ -20,26 +20,26 @@ object SearchModule {
 
     @Provides
     fun searchViewModelProvider(
-        searchProductUC: SearchProductUC,
+        getProductByUC: GetProductByUC,
         coroutineDispatcher: CoroutineDispatcher
-    ) = SearchViewModel(searchProductUC, coroutineDispatcher)
+    ) = SearchViewModel(getProductByUC, coroutineDispatcher)
 
     @Provides
     @ViewModelScoped
     fun searchProductUCProvider(
-        searchProductRepository: SearchProductRepository
-    ) = SearchProductUC(searchProductRepository)
+        productRepository: ProductRepository
+    ) = GetProductByUC(productRepository)
 
     @Provides
     @ViewModelScoped
     fun searchProductRepositoryImplProvider(
-        searchProductApi: SearchProductApi,
+        productApi: ProductApi,
         domainExceptionRepository: DomainExceptionRepository
-    ): SearchProductRepository =
-        SearchProductRepositoryImpl(searchProductApi, domainExceptionRepository)
+    ): ProductRepository =
+        ProductRepositoryImpl(productApi, domainExceptionRepository)
 
     @Provides
     @ViewModelScoped
-    fun searchProductApiProvide(retrofit: Retrofit): SearchProductApi =
-        retrofit.create(SearchProductApi::class.java)
+    fun searchProductApiProvide(retrofit: Retrofit): ProductApi =
+        retrofit.create(ProductApi::class.java)
 }

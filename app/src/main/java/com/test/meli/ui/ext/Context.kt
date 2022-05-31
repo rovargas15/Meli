@@ -15,6 +15,7 @@ fun Context.createTable(
 ): TableLayout {
     val table = TableLayout(this).apply {
         weightSum = 2f
+        setColumnShrinkable(1, true)
         view?.let {
             addView(it)
         }

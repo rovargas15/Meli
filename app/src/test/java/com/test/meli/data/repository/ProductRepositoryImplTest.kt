@@ -1,11 +1,11 @@
 package com.test.meli.data.repository
 
-import com.test.meli.data.endpoint.SearchProductApi
+import com.test.meli.data.endpoint.ProductApi
 import com.test.meli.data.model.ResponseQueryDTO
 import com.test.meli.domain.exception.UnknownError
 import com.test.meli.domain.model.ResponseQuery
 import com.test.meli.domain.repository.DomainExceptionRepository
-import com.test.meli.domain.repository.SearchProductRepository
+import com.test.meli.domain.repository.ProductRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
@@ -15,12 +15,12 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
-class SearchProductRepositoryImplTest {
+class ProductRepositoryImplTest {
 
-    private val searchProductApi: SearchProductApi = mockk(relaxed = true)
+    private val productApi: ProductApi = mockk(relaxed = true)
     private val exception: DomainExceptionRepository = mockk(relaxed = true)
-    private val searchProductRepository: SearchProductRepository =
-        SearchProductRepositoryImpl(searchProductApi, exception)
+    private val productRepository: ProductRepository =
+        ProductRepositoryImpl(productApi, exception)
 
     @Test
     fun giveEmptyWhenGeProductThenReturnResultListEmpty() = runBlocking {
@@ -28,10 +28,10 @@ class SearchProductRepositoryImplTest {
         val responseQueryDTO: ResponseQueryDTO = mockk()
         val query = "product"
         every { responseQueryDTO.toResponseQuery() } answers { ResponseQuery(emptyList()) }
-        coEvery { searchProductApi.searchProduct(query) } answers { responseQueryDTO }
+        coEvery { productApi.getProductByQuery(query) } answers { responseQueryDTO }
 
         // When
-        val response = searchProductRepository.getProductQuery(query)
+        val response = productRepository.getProductByQuery(query)
 
         // Then
         response.collect { result ->
@@ -39,10 +39,10 @@ class SearchProductRepositoryImplTest {
             Assert.assertEquals(result.getOrNull()?.products, emptyList<ResponseQuery>())
         }
         coVerify(exactly = 1) {
-            searchProductApi.searchProduct(query)
+            productApi.getProductByQuery(query)
             responseQueryDTO.toResponseQuery()
         }
-        confirmVerified(searchProductApi, exception, responseQueryDTO)
+        confirmVerified(productApi, exception, responseQueryDTO)
     }
 
     @Test
@@ -151,10 +151,10 @@ class SearchProductRepositoryImplTest {
 
         val query = "product"
         every { responseQueryDTO.toResponseQuery() } answers { responseQuery }
-        coEvery { searchProductApi.searchProduct(query) } answers { responseQueryDTO }
+        coEvery { productApi.getProductByQuery(query) } answers { responseQueryDTO }
 
         // When
-        val response = searchProductRepository.getProductQuery(query)
+        val response = productRepository.getProductByQuery(query)
 
         // Then
         response.collect { result ->
@@ -162,10 +162,10 @@ class SearchProductRepositoryImplTest {
             Assert.assertEquals(result.getOrNull(), responseQuery)
         }
         coVerify(exactly = 1) {
-            searchProductApi.searchProduct(query)
+            productApi.getProductByQuery(query)
             responseQueryDTO.toResponseQuery()
         }
-        confirmVerified(searchProductApi, exception, responseQueryDTO)
+        confirmVerified(productApi, exception, responseQueryDTO)
     }
 
     @Test
@@ -173,11 +173,11 @@ class SearchProductRepositoryImplTest {
         // Give
         val query = "product"
         val error = Throwable()
-        coEvery { searchProductApi.searchProduct(query) } throws error
+        coEvery { productApi.getProductByQuery(query) } throws error
         every { exception.manageError(error) } returns UnknownError
 
         // When
-        val response = searchProductRepository.getProductQuery(query)
+        val response = productRepository.getProductByQuery(query)
 
         // Then
         response.collect { result ->
@@ -188,9 +188,9 @@ class SearchProductRepositoryImplTest {
             }
         }
         coVerify(exactly = 1) {
-            searchProductApi.searchProduct(query)
+            productApi.getProductByQuery(query)
             exception.manageError(error)
         }
-        confirmVerified(searchProductApi, exception)
+        confirmVerified(productApi, exception)
     }
 }
