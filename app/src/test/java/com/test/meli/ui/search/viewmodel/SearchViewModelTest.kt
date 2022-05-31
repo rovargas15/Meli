@@ -26,7 +26,8 @@ class SearchViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val searchProductUC: SearchProductUC = mockk()
-    private val searchViewModel = SearchViewModel(searchProductUC)
+    private val searchViewModel =
+        SearchViewModel(searchProductUC, mainDispatcherRule.testDispatcher)
 
     @Test
     fun giveEmptyWhenGeProductThenReturnResultResultSuccess() = mainDispatcherRule.runBlockingTest {

@@ -9,3 +9,9 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'connectedDebugAndroidTest') {
+        task.finalizedBy AndroidShowTestResults
+    }
+}

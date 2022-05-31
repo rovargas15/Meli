@@ -1,13 +1,11 @@
 package com.test.meli.di.network
 
-import android.app.Application
 import com.squareup.moshi.Moshi
 import com.test.meli.BuildConfig
-import com.test.meli.R
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Dispatcher
 import okhttp3.Interceptor
@@ -19,8 +17,11 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
-object NetworkModule {
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [NetworkModule::class]
+)
+object NetworkTestModule {
 
     @Provides
     @Singleton
@@ -50,33 +51,31 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .dispatcher(Dispatcher().apply { maxRequests = MAX_REQUEST })
             .addInterceptor(interceptor)
-            .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+            .connectTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+            .writeTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
             .build()
     }
 
     /**
      * An own OkHttpClient for the main flow of the app
      * @param client
-     * @param context
      */
     @Provides
     @Singleton
     fun retrofitProvider(
-        client: OkHttpClient,
-        context: Application
+        client: OkHttpClient
     ): Retrofit {
-        val urlBase = context.getString(R.string.base_url)
         val moshi = Moshi.Builder()
             .build()
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
-            .baseUrl(urlBase)
+            .baseUrl(MOCK_WEB_SERVER_URL)
             .build()
     }
 }
 
+private const val TIME_OUT_SECONDS = 30L
 private const val MAX_REQUEST = 1
-private const val TIMEOUT = 20L
+private const val MOCK_WEB_SERVER_URL = "http://localhost:8080"

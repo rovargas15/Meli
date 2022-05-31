@@ -47,7 +47,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun initSubscribe() {
-        searchViewModel.productLiveData.observe(viewLifecycleOwner, ::handleSearchState)
+        searchViewModel.productLiveData.observe(
+            viewLifecycleOwner, ::handleSearchState
+        )
     }
 
     private fun handleSearchState(state: SearchState) {

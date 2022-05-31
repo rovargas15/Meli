@@ -8,6 +8,8 @@ import com.test.meli.domain.model.Product
 import com.test.meli.domain.uc.SearchProductUC
 import com.test.meli.ui.search.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchProductUC: SearchProductUC
+    private val searchProductUC: SearchProductUC,
+    private val coroutineDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _productLiveData by lazy { MutableLiveData<SearchState>() }
@@ -31,16 +34,16 @@ class SearchViewModel @Inject constructor(
         searchProductUC.invoke(query).map { result ->
             result.fold(
                 onSuccess = {
-                    _productLiveData.value = SearchState.Success(it)
+                    _productLiveData.postValue(SearchState.Success(it))
                 },
                 onFailure = {
                     Timber.tag("SearchViewModel").e(it)
-                    _productLiveData.value = SearchState.Error
+                    _productLiveData.postValue(SearchState.Error)
                 }
             )
         }.onStart {
-            _productLiveData.value = SearchState.Loading
-        }.launchIn(viewModelScope)
+            _productLiveData.postValue(SearchState.Loading)
+        }.flowOn(coroutineDispatcher).launchIn(viewModelScope)
     }
 
     fun selectProductDetails(product: Product) {
