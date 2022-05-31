@@ -15,7 +15,7 @@ Este repositorio contiene una app del challenge tecnico conectada a la api de Me
 * [Mockk](https://github.com/mirtizakh/Android-Mockk)
 
 # Estructura
-El diseño genera del proyecto de encuenta **Clean Architecture** con el patron de diseño **MVVM**.
+El diseño genera del proyecto se encuenta en **Clean Architecture** con el patron de diseño **MVVM**.
 
 # Screenshot
 ![Main](/images/detail_screenshot.png)
