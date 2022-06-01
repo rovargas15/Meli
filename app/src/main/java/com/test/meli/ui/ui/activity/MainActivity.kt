@@ -56,7 +56,8 @@ import com.test.meli.ui.search.viewmodel.SearchViewModel
 import com.test.meli.ui.ui.theme.MeliTheme
 import com.test.meli.ui.ui.theme.PrimaryColor
 import com.test.meli.ui.ui.theme.Typography
-import com.test.meli.ui.util.Condition
+import com.test.meli.ui.util.Condition.New
+import com.test.meli.ui.util.Condition.Use
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -176,7 +177,6 @@ fun CreateSearchView(
 
 @Composable
 fun CreateList(products: List<Product>) {
-    val scope = rememberCoroutineScope()
     LazyVerticalGrid(
         columns = GridCells.Adaptive(170.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -184,58 +184,63 @@ fun CreateList(products: List<Product>) {
         modifier = Modifier.padding(start = 8.dp, end = 8.dp),
     ) {
         items(products.size) { index ->
-            Card(
-                modifier = Modifier.clickable {
-                    scope.launch {
-                    }
-                },
-                elevation = 1.dp,
-                border = BorderStroke(1.dp, Color.Black)
-            ) {
-                Column(
-                    modifier = Modifier.padding(PaddingValues(8.dp))
-                ) {
-                    val product = products[index]
-                    LoadImage(product.thumbnail)
-                    Text(
-                        text = product.title,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = product.price.formatCurrency(),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    if (product.shipping?.freeShipping == true) {
-                        Text(
-                            text = stringResource(R.string.product_free_shipping),
-                            style = Typography.labelSmall
-                        )
-                    }
-                    val condition = when (product.condition) {
-                        Condition.New.value -> {
-                            stringResource(R.string.condition_new)
-                        }
-                        Condition.Use.value -> {
-                            stringResource(R.string.condition_use)
-                        }
-                        else -> {
-                            ""
-                        }
-                    }
-                    if (condition.isNotEmpty()) {
-                        Text(
-                            text = condition,
-                            style = Typography.labelSmall
-                        )
-                    }
-                    if (!product.seller.eshop?.nickName.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(R.string.product_free_shipping),
-                            style = Typography.labelSmall,
-                            color = Color.Black
-                        )
-                    }
+            CreateCard(products[index])
+        }
+    }
+}
+
+@Composable
+fun CreateCard(product: Product) {
+    val scope = rememberCoroutineScope()
+    Card(
+        modifier = Modifier.clickable {
+            scope.launch {
+            }
+        },
+        elevation = 1.dp,
+        border = BorderStroke(1.dp, Color.Black)
+    ) {
+        Column(
+            modifier = Modifier.padding(PaddingValues(8.dp))
+        ) {
+            LoadImage(product.thumbnail)
+            Text(
+                text = product.title,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = product.price.formatCurrency(),
+                style = MaterialTheme.typography.titleLarge
+            )
+            if (product.shipping?.freeShipping == true) {
+                Text(
+                    text = stringResource(R.string.product_free_shipping),
+                    style = Typography.labelSmall
+                )
+            }
+            val condition = when (product.condition) {
+                New.value -> {
+                    stringResource(R.string.condition_new)
                 }
+                Use.value -> {
+                    stringResource(R.string.condition_use)
+                }
+                else -> {
+                    ""
+                }
+            }
+            if (condition.isNotEmpty()) {
+                Text(
+                    text = condition,
+                    style = Typography.labelSmall
+                )
+            }
+            if (!product.seller.eshop?.nickName.isNullOrEmpty()) {
+                Text(
+                    text = stringResource(R.string.product_free_shipping),
+                    style = Typography.labelSmall,
+                    color = Color.Black
+                )
             }
         }
     }
