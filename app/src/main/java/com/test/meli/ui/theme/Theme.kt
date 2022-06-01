@@ -1,4 +1,4 @@
-package com.test.meli.ui.ui.theme
+package com.test.meli.ui.theme
 
 import android.app.Activity
 import android.os.Build

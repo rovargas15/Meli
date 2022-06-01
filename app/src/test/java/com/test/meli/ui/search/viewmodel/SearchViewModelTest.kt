@@ -5,6 +5,7 @@ import com.test.meli.domain.exception.UnknownError
 import com.test.meli.domain.model.Product
 import com.test.meli.domain.model.ResponseQuery
 import com.test.meli.domain.uc.GetProductByUC
+import com.test.meli.ui.main.viewmodel.SearchViewModel
 import com.test.meli.ui.search.state.SearchState
 import com.test.meli.util.MainDispatcherRule
 import com.test.meli.util.getOrAwaitValue
