@@ -17,6 +17,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "com.test.meli.runner.InstrumentationRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
         testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
@@ -45,12 +48,21 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
     }
     sourceSets {
         main {
             assets {
                 srcDirs 'src\\main\\assets', 'src\\androidTest\\assets\\mock'
             }
+        }
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
     kotlinOptions {
@@ -66,6 +78,34 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
+
+    // Compose
+    implementation "androidx.compose.ui:ui:$compose_version"
+    // Material Design
+    implementation "androidx.compose.material3:material3:1.0.0-alpha12"
+    // Tooling support (Previews, etc.)
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    // Material Design
+    implementation "androidx.compose.material:material:$compose_version"
+    // Material design icons
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    // Integration with activities
+    implementation "androidx.activity:activity-compose:1.4.0"
+    // Integration with ViewModels
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
+    // Integration with observables
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    // Coil
+    implementation "io.coil-kt:coil-compose:2.1.0"
+    // Lotti
+    implementation "com.airbnb.android:lottie-compose:5.2.0"
+
+
+    // UI Tests
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.1.1"
 
     // Design
     implementation 'com.google.android.material:material:1.6.0'

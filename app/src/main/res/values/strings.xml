@@ -11,5 +11,6 @@
     <string name="location_shop">Ubicación %s, %s</string>
     <string name="reputation_seller">Mercadolider %s</string>
     <string name="btn_retry">Volver a intentar</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>

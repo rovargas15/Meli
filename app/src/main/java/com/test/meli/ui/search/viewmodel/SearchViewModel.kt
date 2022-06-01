@@ -1,5 +1,8 @@
 package com.test.meli.ui.search.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,6 +25,14 @@ class SearchViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+    var uiStateProduct by mutableStateOf(emptyList<Product>())
+        private set
+
+    var uiStateLoader by mutableStateOf(false)
+        private set
+
+    var uiStateError by mutableStateOf("")
+        private set
     private val _productLiveData by lazy { MutableLiveData<SearchState>() }
     val productLiveData: LiveData<SearchState>
         get() = _productLiveData
@@ -34,15 +45,15 @@ class SearchViewModel @Inject constructor(
         getProductByUC.invoke(query).map { result ->
             result.fold(
                 onSuccess = {
-                    _productLiveData.postValue(SearchState.Success(it))
+                    uiStateProduct = it.products
                 },
                 onFailure = {
                     Timber.tag("SearchViewModel").e(it)
-                    _productLiveData.postValue(SearchState.Error)
+                    uiStateError = it.message ?: ""
                 }
             )
         }.onStart {
-            _productLiveData.postValue(SearchState.Loading)
+            uiStateLoader = true
         }.flowOn(coroutineDispatcher).launchIn(viewModelScope)
     }
 
