@@ -1,14 +1,12 @@
 package com.test.meli.ui.search.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.test.meli.domain.exception.UnknownError
+import com.test.meli.domain.exception.DomainException
 import com.test.meli.domain.model.Product
 import com.test.meli.domain.model.ResponseQuery
 import com.test.meli.domain.uc.GetProductByUC
 import com.test.meli.ui.main.viewmodel.SearchViewModel
-import com.test.meli.ui.search.state.SearchState
 import com.test.meli.util.MainDispatcherRule
-import com.test.meli.util.getOrAwaitValue
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -35,15 +33,15 @@ class SearchViewModelTest {
         // Give
         val query = "test"
         val responseQuery: ResponseQuery = mockk()
+        every { responseQuery.products } returns listOf()
         every { getProductByUC.invoke(query) } answers { flowOf(Result.success(responseQuery)) }
 
         // When
         searchViewModel.getProductQuery(query)
 
         // Then
-        val response = searchViewModel.productLiveData.getOrAwaitValue()
-        assert(response is SearchState.Success)
-        Assert.assertEquals((response as SearchState.Success).responseQuery, responseQuery)
+        val response = searchViewModel.uiStateProduct
+        Assert.assertEquals(response, emptyList<Product>())
         verify(exactly = 1) { getProductByUC.invoke(query) }
         confirmVerified(getProductByUC)
     }
@@ -52,14 +50,14 @@ class SearchViewModelTest {
     fun giveDataWhenGeProductThenReturnResultFailure() {
         // Give
         val query = "test"
-        every { getProductByUC.invoke(query) } answers { flowOf(Result.failure(UnknownError)) }
+        every { getProductByUC.invoke(query) } answers { flowOf(Result.failure(DomainException("error"))) }
 
         // When
         searchViewModel.getProductQuery(query)
 
         // Then
-        val response = searchViewModel.productLiveData.getOrAwaitValue()
-        assert(response is SearchState.Error)
+        val response = searchViewModel.uiStateError
+        Assert.assertEquals(response, "error")
         verify(exactly = 1) { getProductByUC.invoke(query) }
         confirmVerified(getProductByUC)
     }
@@ -73,7 +71,7 @@ class SearchViewModelTest {
         searchViewModel.selectProductDetails(product)
 
         // Then
-        val response = searchViewModel.productDetailLiveData.getOrAwaitValue()
+        val response = searchViewModel.uiStateProductDetail
         Assert.assertEquals(product, response)
     }
 }
