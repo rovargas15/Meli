@@ -1,5 +1,7 @@
 package com.test.meli.ui.main.viewmodel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +12,8 @@ import com.test.meli.domain.uc.GetProductByUC
 import com.test.meli.ui.main.state.SearchEvent
 import com.test.meli.ui.main.state.SearchEvent.ProductByQuery
 import com.test.meli.ui.main.state.SearchEvent.Reload
+import com.test.meli.ui.main.state.SearchEvent.SelectProduct
+import com.test.meli.ui.main.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
@@ -25,22 +29,17 @@ class SearchViewModel @Inject constructor(
     private val coroutineDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    var uiStateProduct by mutableStateOf(emptyList<Product>())
-        private set
-
-    var uiStateLoader by mutableStateOf(false)
-        private set
-
-    var uiStateError by mutableStateOf("")
-        private set
-
     var uiStateProductDetail: Product? by mutableStateOf(null)
         private set
+
+    private val _viewState: MutableState<SearchState> = mutableStateOf(SearchState.Init)
+    val viewState: State<SearchState> = _viewState
 
     fun process(event: SearchEvent) {
         when (event) {
             is ProductByQuery -> getProductQuery(query = event.query)
             is Reload -> getProductQuery("")
+            is SelectProduct -> selectProductDetails(product = event.product)
         }
     }
 
@@ -48,19 +47,22 @@ class SearchViewModel @Inject constructor(
         getProductByUC.invoke(query).map { result ->
             result.fold(
                 onSuccess = {
-                    uiStateProduct = it.products
+                    // uiStateProduct = it.products
+                    _viewState.value = SearchState.Success(it.products)
                 },
                 onFailure = {
                     Timber.tag("SearchViewModel").e(it)
-                    uiStateError = it.message ?: ""
+                    _viewState.value = SearchState.Error
+                    // uiStateError = it.message ?: ""
                 }
             )
         }.onStart {
-            uiStateLoader = true
+            _viewState.value = SearchState.Loader
+            // uiStateLoader = true
         }.flowOn(coroutineDispatcher).launchIn(viewModelScope)
     }
 
-    fun selectProductDetails(product: Product) {
+    private fun selectProductDetails(product: Product) {
         uiStateProductDetail = product
     }
 }

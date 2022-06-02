@@ -32,6 +32,7 @@ import com.test.meli.R.string
 import com.test.meli.domain.model.Attribute
 import com.test.meli.domain.model.Product
 import com.test.meli.ui.ext.formatCurrency
+import com.test.meli.ui.ext.isPar
 import com.test.meli.ui.theme.LocalDimensions
 import com.test.meli.ui.theme.Typography
 
@@ -41,6 +42,9 @@ fun DetailScreen(product: Product?, onBackPress: () -> Unit) {
     Scaffold(
         topBar = {
             SmallTopAppBar(
+                modifier = Modifier.background(
+                    color = MaterialTheme.colorScheme.primary
+                ),
                 title = {
                     Text(text = String())
                 },
@@ -101,15 +105,13 @@ fun ContentDetailScreen(modifier: Modifier, product: Product?) {
 
 @Composable
 fun TableScreen(attributes: List<Attribute>) {
-    // Each cell of a column must have the same weight.
     val column1Weight = .5f // 50%
     val column2Weight = .5f // 50%
-    // The LazyColumn will be our table. Notice the use of the weights below
     LazyColumn(
         userScrollEnabled = false
     ) {
         itemsIndexed(attributes) { index, attribute ->
-            val modifier = if (index.mod(2) == 0) {
+            val modifier = if (index.isPar()) {
                 Modifier
                     .background(MaterialTheme.colorScheme.onSecondary)
                     .fillMaxSize()

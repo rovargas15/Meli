@@ -10,11 +10,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.test.meli.ui.main.fragment.DetailScreen
 import com.test.meli.ui.main.fragment.SearchScreen
+import com.test.meli.ui.main.state.SearchEvent
 import com.test.meli.ui.main.viewmodel.SearchViewModel
 import com.test.meli.ui.theme.MeliTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val searchViewModel: SearchViewModel by viewModels()
+    private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +36,22 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "main") {
-                        composable("main") {
-                            val (value, onValueChange) = rememberSaveable { mutableStateOf("") }
-                            SearchScreen(searchViewModel, value, onValueChange) {
-                                searchViewModel.selectProductDetails(it)
-                                navController.navigate("detail")
+                    navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = Route.MAIN) {
+                        composable(Route.MAIN) {
+                            val (value, onValueChange) = rememberSaveable { mutableStateOf(String()) }
+                            SearchScreen(
+                                searchViewModel = searchViewModel,
+                                value,
+                                onValueChange
+                            ) { event ->
+                                searchViewModel.process(event)
+                                if (event is SearchEvent.SelectProduct) {
+                                    navController.navigate(Route.DETAIL)
+                                }
                             }
                         }
-                        composable("detail") {
+                        composable(Route.DETAIL) {
                             val product = searchViewModel.uiStateProductDetail
                             DetailScreen(product) {
                                 navController.popBackStack()
@@ -52,5 +61,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private object Route {
+        const val MAIN = "main"
+        const val DETAIL = "detail"
     }
 }

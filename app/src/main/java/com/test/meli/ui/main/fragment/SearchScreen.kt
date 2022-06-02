@@ -18,13 +18,14 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,15 +44,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest.Builder
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec.RawRes
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.test.meli.R
-import com.test.meli.R.drawable
-import com.test.meli.R.raw
-import com.test.meli.R.string
 import com.test.meli.domain.model.Product
 import com.test.meli.ui.ext.formatCurrency
-import com.test.meli.ui.main.state.SearchEvent.ProductByQuery
-import com.test.meli.ui.main.state.SearchEvent.Reload
+import com.test.meli.ui.main.state.SearchEvent
+import com.test.meli.ui.main.state.SearchState
 import com.test.meli.ui.main.viewmodel.SearchViewModel
 import com.test.meli.ui.theme.LocalDimensions
 import com.test.meli.ui.theme.Typography
@@ -59,132 +58,159 @@ import com.test.meli.ui.util.Condition.New
 import com.test.meli.ui.util.Condition.Use
 import kotlinx.coroutines.launch
 
-@Composable
-fun ManagerState(
-    searchViewModel: SearchViewModel,
-    onSelect: (Product) -> Unit,
-    query: String
-) {
-    val stateProduct = searchViewModel.uiStateProduct
-    val stateLoader = searchViewModel.uiStateLoader
-    val stateError = searchViewModel.uiStateError
-
-    when {
-        stateProduct.isNotEmpty() -> {
-            CreateList(products = stateProduct, onSelect = onSelect)
-        }
-        stateError.isNotEmpty() -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                val composition by rememberLottieComposition(RawRes(raw.error))
-                LottieAnimation(composition)
-
-                Text(
-                    text = stringResource(id = R.string.search_message_error),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-
-                Button(onClick = {
-                    searchViewModel.process(Reload(query))
-                }) {
-                    Text(
-                        text = stringResource(id = R.string.btn_retry),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-        }
-        stateLoader -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                val composition by rememberLottieComposition(RawRes(raw.loader))
-                LottieAnimation(
-                    composition = composition,
-                    isPlaying = true,
-                    modifier = Modifier.size(LocalDimensions.current.imageSmall)
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     searchViewModel: SearchViewModel,
     query: String,
     onQueryChange: (String) -> Unit,
-    onSelect: (Product) -> Unit
+    onEvent: (SearchEvent) -> Unit
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingMedium),
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.primary
-                )
-                .fillMaxWidth()
-        ) {
-            val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
-            OutlinedTextField(
-                value = query,
-                onValueChange = { onQueryChange(it) },
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            Box(
                 modifier = Modifier
-                    .padding(LocalDimensions.current.paddingMedium)
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background),
-                placeholder = { Text(text = stringResource(id = string.search_hint)) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {
-                    searchViewModel.process(ProductByQuery(query))
-                    localSoftwareKeyboardController?.hide()
-                }),
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        Outlined.Search,
-                        "contentDescription",
-                        modifier = Modifier.padding(LocalDimensions.current.paddingSmall)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary
                     )
-                }
-            )
+                    .fillMaxWidth()
+            ) {
+                val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { onQueryChange(it) },
+                    modifier = Modifier
+                        .padding(LocalDimensions.current.paddingMedium)
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background),
+                    placeholder = { Text(text = stringResource(id = R.string.search_hint)) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = {
+                        localSoftwareKeyboardController?.hide()
+                        onEvent(SearchEvent.ProductByQuery(query = query))
+                    }),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            Outlined.Search,
+                            "contentDescription",
+                            modifier = Modifier.padding(LocalDimensions.current.paddingSmall)
+                        )
+                    }
+                )
+            }
         }
-        ManagerState(searchViewModel, onSelect, query)
+    ) {
+        ManagerState(
+            searchViewModel = searchViewModel,
+            modifier = Modifier.padding(it),
+            onEvent = onEvent
+        ) {
+            onEvent(SearchEvent.Reload(query = query))
+        }
     }
 }
 
 @Composable
-fun CreateList(products: List<Product>, onSelect: (Product) -> Unit) {
+fun ManagerState(
+    searchViewModel: SearchViewModel,
+    modifier: Modifier,
+    onEvent: (SearchEvent) -> Unit,
+    onRetry: () -> Unit
+) {
+    when (val state = searchViewModel.viewState.value) {
+        is SearchState.Success -> {
+            CreateList(
+                modifier = modifier,
+                products = state.products,
+                onEvent = onEvent
+            )
+        }
+        is SearchState.Error -> {
+            ContentError(modifier = modifier, onRetry = onRetry)
+        }
+        is SearchState.Loader -> {
+            ContentLoader(modifier = modifier)
+        }
+        else -> Unit
+    }
+}
+
+@Composable
+fun ContentLoader(modifier: Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CreateAnimation(raw = RawRes(R.raw.loader))
+    }
+}
+
+@Composable
+fun ContentError(modifier: Modifier, onRetry: () -> Unit) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+            LocalDimensions.current.paddingSmall,
+            alignment = Alignment.CenterVertically
+        ),
+    ) {
+        CreateAnimation(raw = RawRes(R.raw.error))
+        Text(
+            text = stringResource(id = R.string.search_message_error),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        TextButton(
+            onClick = {
+                onRetry()
+            }
+        ) {
+            Text(
+                text = stringResource(id = R.string.btn_retry),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun CreateAnimation(raw: RawRes, modifier: Modifier = Modifier) {
+    val composition by rememberLottieComposition(spec = raw)
+    LottieAnimation(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+        modifier = modifier.size(LocalDimensions.current.imageSmall)
+    )
+}
+
+@Composable
+fun CreateList(modifier: Modifier, products: List<Product>, onEvent: (SearchEvent) -> Unit) {
     LazyVerticalGrid(
         columns = Adaptive(minSize = LocalDimensions.current.heightCard),
         horizontalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingMedium),
         verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingMedium),
-        modifier = Modifier.padding(
-            start = LocalDimensions.current.paddingMedium,
-            end = LocalDimensions.current.paddingMedium
+        modifier = modifier.padding(
+            all = LocalDimensions.current.paddingMedium,
         )
     ) {
         items(products.size) { index ->
-            CreateCard(products[index], onSelect)
+            CreateCard(products[index], onEvent)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateCard(product: Product, onSelect: (Product) -> Unit) {
+fun CreateCard(product: Product, onEvent: (SearchEvent) -> Unit) {
     val scope = rememberCoroutineScope()
     Card(
         modifier = Modifier.clickable {
             scope.launch {
-                onSelect(product)
+                onEvent(SearchEvent.SelectProduct(product = product))
             }
         },
         border = BorderStroke(LocalDimensions.current.borderSmall, Color.Black)
@@ -202,7 +228,7 @@ fun CreateCard(product: Product, onSelect: (Product) -> Unit) {
             Text(
                 text = product.title,
                 style = Typography.bodyMedium,
-                maxLines = 3,
+                maxLines = MAX_LINES,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
@@ -210,13 +236,11 @@ fun CreateCard(product: Product, onSelect: (Product) -> Unit) {
                 style = Typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold
             )
-
             TextCondition(condition = product.condition)
             TextFreeShipping(isFreeShipping = product.shipping?.freeShipping)
-
             product.seller.eshop?.nickName?.let {
                 Text(
-                    text = stringResource(string.sold_by, it),
+                    text = stringResource(R.string.sold_by, it),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Light,
                     color = MaterialTheme.colorScheme.tertiary
@@ -230,10 +254,10 @@ fun CreateCard(product: Product, onSelect: (Product) -> Unit) {
 fun TextCondition(condition: String) {
     val result = when (condition) {
         New.value -> {
-            stringResource(string.condition_new)
+            stringResource(R.string.condition_new)
         }
         Use.value -> {
-            stringResource(string.condition_use)
+            stringResource(R.string.condition_use)
         }
         else -> {
             ""
@@ -251,7 +275,7 @@ fun TextCondition(condition: String) {
 fun TextFreeShipping(isFreeShipping: Boolean?) {
     if (isFreeShipping == true) {
         Text(
-            text = stringResource(string.product_free_shipping),
+            text = stringResource(R.string.product_free_shipping),
             style = Typography.labelSmall
         )
     }
@@ -264,8 +288,10 @@ fun LoadImage(url: String, modifier: Modifier) {
             .data(url)
             .crossfade(true)
             .build(),
-        placeholder = painterResource(drawable.ic_placeholder),
+        placeholder = painterResource(R.drawable.ic_placeholder),
         contentDescription = null,
         modifier = modifier
     )
 }
+
+private const val MAX_LINES = 3
