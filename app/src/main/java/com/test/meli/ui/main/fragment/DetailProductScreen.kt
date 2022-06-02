@@ -2,6 +2,8 @@ package com.test.meli.ui.main.fragment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -11,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,37 +59,43 @@ fun DetailScreen(product: Product?, onBackPress: () -> Unit) {
 @Composable
 fun ContentDetailScreen(modifier: Modifier, product: Product?) {
     checkNotNull(product)
-    Column(
-        modifier = modifier
-            .padding(
-                start = LocalDimensions.current.paddingXLarge,
-                end = LocalDimensions.current.paddingXLarge
-            ),
-        verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingSmall)
-    ) {
-        Text(
-            text = product.title,
-            style = Typography.titleMedium
-        )
-        LoadImage(
-            url = product.thumbnail,
-            modifier
-                .height(LocalDimensions.current.imageMedium)
-                .fillMaxWidth()
-        )
-        Text(
-            text = product.price.formatCurrency(),
-            style = Typography.headlineLarge,
-            fontWeight = FontWeight.SemiBold
-        )
-        TextCondition(condition = product.condition)
-        TextFreeShipping(isFreeShipping = product.shipping?.freeShipping)
-        Text(
-            text = stringResource(id = string.product_attributes),
-            style = Typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
-        )
-        TableScreen(product.attributes)
+    BoxWithConstraints(modifier = Modifier.padding(LocalDimensions.current.paddingMedium)) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(this@BoxWithConstraints.maxHeight),
+                verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingMedium)
+            ) {
+                Text(
+                    text = product.title,
+                    style = Typography.titleMedium
+                )
+                LoadImage(
+                    url = product.thumbnail,
+                    modifier
+                        .height(LocalDimensions.current.imageMedium)
+                        .fillMaxWidth()
+                )
+                Text(
+                    text = product.price.formatCurrency(),
+                    style = Typography.headlineLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+                TextCondition(condition = product.condition)
+                TextFreeShipping(isFreeShipping = product.shipping?.freeShipping)
+                Text(
+                    text = stringResource(id = string.product_attributes),
+                    style = Typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+                TableScreen(product.attributes)
+            }
+        }
     }
 }
 
