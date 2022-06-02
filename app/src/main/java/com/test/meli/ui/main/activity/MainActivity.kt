@@ -1,6 +1,6 @@
 package com.test.meli.ui.main.activity
 
-import SearchScreen
+import com.test.meli.ui.main.fragment.SearchScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MeliTheme(
-                dynamicColor = true
+                darkTheme = false
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

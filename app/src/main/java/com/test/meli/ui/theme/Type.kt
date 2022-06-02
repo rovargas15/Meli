@@ -1,40 +1,35 @@
 package com.test.meli.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    bodySmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        color = Color.Black
+    headlineMedium = TextStyle(
+        fontSize = 28.sp,
     ),
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        color = Color.Black
+    headlineSmall = TextStyle(
+        fontSize = 24.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Bold,
-        color = Green,
+        fontSize = 22.sp
     ),
     titleMedium = TextStyle(
-        color = Color.Black
+        fontSize = 18.sp
     ),
-    titleSmall = TextStyle(
-        color = Color.Black
+    bodyLarge = TextStyle(
+        fontSize = 16.sp
+    ),
+    bodyMedium = TextStyle(
+        fontSize = 14.sp
+    ),
+    bodySmall = TextStyle(
+        fontSize = 12.sp
+    ),
+    labelSmall = TextStyle(
+        fontWeight = FontWeight.Bold,
+        color = Green,
     )
-
 )

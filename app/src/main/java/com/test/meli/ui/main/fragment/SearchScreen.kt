@@ -1,3 +1,5 @@
+package com.test.meli.ui.main.fragment
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,14 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest.Builder
 import com.airbnb.lottie.compose.LottieAnimation
@@ -51,7 +52,7 @@ import com.test.meli.R.string
 import com.test.meli.domain.model.Product
 import com.test.meli.ui.ext.formatCurrency
 import com.test.meli.ui.main.viewmodel.SearchViewModel
-import com.test.meli.ui.theme.PrimaryColor
+import com.test.meli.ui.theme.LocalDimensions
 import com.test.meli.ui.theme.Typography
 import com.test.meli.ui.util.Condition.New
 import com.test.meli.ui.util.Condition.Use
@@ -93,7 +94,7 @@ fun ManagerState(
                 LottieAnimation(
                     composition = composition,
                     isPlaying = true,
-                    modifier = Modifier.size(150.dp)
+                    modifier = Modifier.size(LocalDimensions.current.imageSmall)
                 )
             }
         }
@@ -108,11 +109,14 @@ fun SearchScreen(
 ) {
     val (value, onValueChange) = rememberSaveable { mutableStateOf("") }
     Column(
+        verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingMedium),
         modifier = Modifier.fillMaxSize()
     ) {
         Box(
             modifier = Modifier
-                .background(color = PrimaryColor)
+                .background(
+                    color = MaterialTheme.colorScheme.primary
+                )
                 .fillMaxWidth()
         ) {
             val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
@@ -120,9 +124,9 @@ fun SearchScreen(
                 value = value,
                 onValueChange = { onValueChange(it) },
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(LocalDimensions.current.paddingMedium)
                     .fillMaxWidth()
-                    .background(Color.White),
+                    .background(MaterialTheme.colorScheme.background),
                 placeholder = { Text(text = stringResource(id = string.search_hint)) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
@@ -134,7 +138,7 @@ fun SearchScreen(
                     Icon(
                         Outlined.Search,
                         "contentDescription",
-                        modifier = Modifier.padding(5.dp)
+                        modifier = Modifier.padding(LocalDimensions.current.paddingSmall)
                     )
                 }
             )
@@ -146,10 +150,13 @@ fun SearchScreen(
 @Composable
 fun CreateList(products: List<Product>, onSelect: (Product) -> Unit) {
     LazyVerticalGrid(
-        columns = Adaptive(170.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+        columns = Adaptive(minSize = LocalDimensions.current.heightCard),
+        horizontalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingMedium),
+        verticalArrangement = Arrangement.spacedBy(space = LocalDimensions.current.paddingMedium),
+        modifier = Modifier.padding(
+            start = LocalDimensions.current.paddingMedium,
+            end = LocalDimensions.current.paddingMedium
+        )
     ) {
         items(products.size) { index ->
             CreateCard(products[index], onSelect)
@@ -167,29 +174,39 @@ fun CreateCard(product: Product, onSelect: (Product) -> Unit) {
                 onSelect(product)
             }
         },
-        border = BorderStroke(1.dp, Color.Black)
+        border = BorderStroke(LocalDimensions.current.borderSmall, Color.Black)
     ) {
         Column(
-            modifier = Modifier.padding(PaddingValues(8.dp))
+            modifier = Modifier.padding(PaddingValues(LocalDimensions.current.paddingMedium)),
+            verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingSmall),
         ) {
-            LoadImage(product.thumbnail, Modifier.height(150.dp))
+            LoadImage(
+                product.thumbnail,
+                Modifier
+                    .height(LocalDimensions.current.imageSmall)
+                    .fillMaxWidth()
+            )
             Text(
                 text = product.title,
-                style = MaterialTheme.typography.bodyMedium
+                style = Typography.bodyMedium,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = product.price.formatCurrency(),
-                style = MaterialTheme.typography.titleLarge
+                style = Typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold
             )
 
             TextCondition(condition = product.condition)
             TextFreeShipping(isFreeShipping = product.shipping?.freeShipping)
 
-            if (!product.seller.eshop?.nickName.isNullOrEmpty()) {
+            product.seller.eshop?.nickName?.let {
                 Text(
-                    text = stringResource(string.product_free_shipping),
-                    style = Typography.labelSmall,
-                    color = Color.Black
+                    text = stringResource(string.sold_by, it),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Light,
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
         }
@@ -236,7 +253,6 @@ fun LoadImage(url: String, modifier: Modifier) {
             .build(),
         placeholder = painterResource(drawable.ic_placeholder),
         contentDescription = null,
-        contentScale = ContentScale.FillHeight,
         modifier = modifier
     )
 }

@@ -1,14 +1,12 @@
 package com.test.meli.ui.main.fragment
 
-import LoadImage
-import TextCondition
-import TextFreeShipping
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
@@ -25,13 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.test.meli.R.string
 import com.test.meli.domain.model.Attribute
 import com.test.meli.domain.model.Product
 import com.test.meli.ui.ext.formatCurrency
-import com.test.meli.ui.theme.Grey
-import com.test.meli.ui.theme.PrimaryColor
+import com.test.meli.ui.theme.LocalDimensions
 import com.test.meli.ui.theme.Typography
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +38,7 @@ fun DetailScreen(product: Product?, onBackPress: () -> Unit) {
         topBar = {
             SmallTopAppBar(
                 title = {
-                    Text(text = "Detail")
+                    Text(text = String())
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackPress) {
@@ -50,7 +47,6 @@ fun DetailScreen(product: Product?, onBackPress: () -> Unit) {
                 },
             )
         },
-        modifier = Modifier.background(color = PrimaryColor)
     ) {
         ContentDetailScreen(Modifier.padding(it), product)
     }
@@ -61,17 +57,26 @@ fun ContentDetailScreen(modifier: Modifier, product: Product?) {
     checkNotNull(product)
     Column(
         modifier = modifier
-            .padding(start = 16.dp, end = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+            .padding(
+                start = LocalDimensions.current.paddingXLarge,
+                end = LocalDimensions.current.paddingXLarge
+            ),
+        verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingSmall)
     ) {
         Text(
             text = product.title,
-            style = Typography.titleLarge
+            style = Typography.titleMedium
         )
-        LoadImage(url = product.thumbnail, modifier.height(200.dp))
+        LoadImage(
+            url = product.thumbnail,
+            modifier
+                .height(LocalDimensions.current.imageMedium)
+                .fillMaxWidth()
+        )
         Text(
             text = product.price.formatCurrency(),
-            style = Typography.headlineSmall
+            style = Typography.headlineLarge,
+            fontWeight = FontWeight.SemiBold
         )
         TextCondition(condition = product.condition)
         TextFreeShipping(isFreeShipping = product.shipping?.freeShipping)
@@ -96,7 +101,7 @@ fun TableScreen(attributes: List<Attribute>) {
         itemsIndexed(attributes) { index, attribute ->
             val modifier = if (index.mod(2) == 0) {
                 Modifier
-                    .background(Grey)
+                    .background(MaterialTheme.colorScheme.onSecondary)
                     .fillMaxSize()
             } else {
                 Modifier.fillMaxSize()
@@ -122,6 +127,6 @@ fun RowScope.TableCell(
         text = text,
         Modifier
             .weight(weight)
-            .padding(8.dp)
+            .padding(LocalDimensions.current.paddingMedium)
     )
 }
