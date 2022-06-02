@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,9 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -51,6 +50,8 @@ import com.test.meli.R.raw
 import com.test.meli.R.string
 import com.test.meli.domain.model.Product
 import com.test.meli.ui.ext.formatCurrency
+import com.test.meli.ui.main.state.SearchEvent.ProductByQuery
+import com.test.meli.ui.main.state.SearchEvent.Reload
 import com.test.meli.ui.main.viewmodel.SearchViewModel
 import com.test.meli.ui.theme.LocalDimensions
 import com.test.meli.ui.theme.Typography
@@ -61,28 +62,39 @@ import kotlinx.coroutines.launch
 @Composable
 fun ManagerState(
     searchViewModel: SearchViewModel,
-    onSelect: (Product) -> Unit
+    onSelect: (Product) -> Unit,
+    query: String
 ) {
     val stateProduct = searchViewModel.uiStateProduct
     val stateLoader = searchViewModel.uiStateLoader
     val stateError = searchViewModel.uiStateError
+
     when {
         stateProduct.isNotEmpty() -> {
             CreateList(products = stateProduct, onSelect = onSelect)
         }
         stateError.isNotEmpty() -> {
-            Box(
+            Column(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                verticalArrangement = Arrangement.Center
             ) {
                 val composition by rememberLottieComposition(RawRes(raw.error))
                 LottieAnimation(composition)
 
                 Text(
                     text = stringResource(id = R.string.search_message_error),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.bodyMedium,
                 )
+
+                Button(onClick = {
+                    searchViewModel.process(Reload(query))
+                }) {
+                    Text(
+                        text = stringResource(id = R.string.btn_retry),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
         stateLoader -> {
@@ -105,9 +117,10 @@ fun ManagerState(
 @Composable
 fun SearchScreen(
     searchViewModel: SearchViewModel,
+    query: String,
+    onQueryChange: (String) -> Unit,
     onSelect: (Product) -> Unit
 ) {
-    val (value, onValueChange) = rememberSaveable { mutableStateOf("") }
     Column(
         verticalArrangement = Arrangement.spacedBy(LocalDimensions.current.paddingMedium),
         modifier = Modifier.fillMaxSize()
@@ -121,8 +134,8 @@ fun SearchScreen(
         ) {
             val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
             OutlinedTextField(
-                value = value,
-                onValueChange = { onValueChange(it) },
+                value = query,
+                onValueChange = { onQueryChange(it) },
                 modifier = Modifier
                     .padding(LocalDimensions.current.paddingMedium)
                     .fillMaxWidth()
@@ -130,7 +143,7 @@ fun SearchScreen(
                 placeholder = { Text(text = stringResource(id = string.search_hint)) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
-                    searchViewModel.getProductQuery(value)
+                    searchViewModel.process(ProductByQuery(query))
                     localSoftwareKeyboardController?.hide()
                 }),
                 singleLine = true,
@@ -143,7 +156,7 @@ fun SearchScreen(
                 }
             )
         }
-        ManagerState(searchViewModel, onSelect)
+        ManagerState(searchViewModel, onSelect, query)
     }
 }
 

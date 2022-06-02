@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.test.meli.domain.model.Product
 import com.test.meli.domain.uc.GetProductByUC
+import com.test.meli.ui.main.state.SearchEvent
+import com.test.meli.ui.main.state.SearchEvent.ProductByQuery
+import com.test.meli.ui.main.state.SearchEvent.Reload
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
@@ -34,7 +37,14 @@ class SearchViewModel @Inject constructor(
     var uiStateProductDetail: Product? by mutableStateOf(null)
         private set
 
-    fun getProductQuery(query: String) {
+    fun process(event: SearchEvent) {
+        when (event) {
+            is ProductByQuery -> getProductQuery(query = event.query)
+            is Reload -> getProductQuery("")
+        }
+    }
+
+    private fun getProductQuery(query: String) {
         getProductByUC.invoke(query).map { result ->
             result.fold(
                 onSuccess = {
